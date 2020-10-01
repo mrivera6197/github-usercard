@@ -1,8 +1,15 @@
+
+import axios from 'axios';
+
+console.log(axios)
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+
+axios.get('https://api.github.com/users/mrivera6197')
+// console.log(result)
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -12,10 +19,19 @@
     Skip to STEP 3.
 */
 
+axios.get('https://api.github.com/users/mrivera6197')     
+  .then(futureData => {
+  console.log('1', futureData)
+  console.log('2', futureData.data)
+}).catch(err => {
+  console.log('error: ', err)
+})
+
 /*
   STEP 4: Pass the data received from Github into your function,
     and append the returned markup to the DOM as a child of .cards
 */
+
 
 /*
   STEP 5: Now that you have your own card getting added to the DOM, either
@@ -28,7 +44,22 @@
     user, and adding that card to the DOM.
 */
 
+
 const followersArray = [];
+followersArray.push('mrivera6197','tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell')
+const entrypoint = document.querySelector('.cards')
+
+followersArray.forEach(item => {
+  axios.get(`https://api.github.com/users/${item}`)
+  .then(res => {
+    const gitCard = githubCard(res.data)
+    entrypoint.append(gitCard)
+  })
+  .catch(err => {
+    console.log(err)
+  })
+})
+
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,6 +80,63 @@ const followersArray = [];
       </div>
     </div>
 */
+
+
+function githubCard(obj) {
+
+  //elements 
+
+  let card = document.createElement('div')
+  let image = document.createElement('img')
+  let cardInfo = document.createElement('div')
+  let name = document.createElement('h3')
+  let username = document.createElement('p')
+  let location = document.createElement('p')
+  let profile = document.createElement('p')
+  let address = document.createElement('a')
+  let followers = document.createElement('p')
+  let following = document.createElement('p')
+  let bio = document.createElement('p')
+
+  //append elements 
+
+  card.appendChild(image)
+  card.appendChild(cardInfo)
+  cardInfo.appendChild(name)
+  cardInfo.appendChild(username)
+  cardInfo.appendChild(location)
+  cardInfo.appendChild(profile)
+  profile.appendChild(address)
+  cardInfo.appendChild(followers)
+  cardInfo.appendChild(following)
+  cardInfo.appendChild(bio)
+
+  //class names 
+
+  card.classList.add('card')
+  cardInfo.classList.add('card-info')
+  name.classList.add('name')
+  username.classList.add('username')
+
+  //text content
+
+  image.src = obj.avatar_url
+  name.textContent = obj.name
+  username.textContent = obj.login
+  location.textContent = `location: ${obj.location}`
+  profile.textContent = `Profile: ${obj.url}`
+  address.href = obj.html_url
+  followers.textContent = `Followers: ${obj.followers}`
+  following.textContent = `Following: ${obj.following}`
+  bio.textContent = `Bio: ${obj.bio}`
+
+  //interactivity 
+  card.addEventListener('click', () => {
+    card.classList.toggle('selected')
+  })
+
+  return card
+}
 
 /*
   List of LS Instructors Github username's:
